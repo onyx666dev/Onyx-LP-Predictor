@@ -93,7 +93,8 @@ models = load_models()
 st.markdown('<p class="main-title">📊 Linear Regression Predictor</p>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Select a regression type to make predictions</p>', unsafe_allow_html=True)
 
-# Sidebar for navigation
+# Sidebar with logo and navigation
+st.sidebar.image("onyxcode_black.png", width=150)  # Set width to control size
 st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Choose a regression type:",
