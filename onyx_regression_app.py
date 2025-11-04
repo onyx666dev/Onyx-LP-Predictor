@@ -90,7 +90,7 @@ def load_models():
 models = load_models()
 
 # Main title
-st.markdown('<p class="main-title">📊 Regressify Pro Dashboardr</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Select a regression type to make predictions</p>', unsafe_allow_html=True)
 
 # Sidebar with logo and navigation
