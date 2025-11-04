@@ -1,6 +1,7 @@
 import streamlit as st
 import pickle
 import pandas as pd
+import os
 
 # Page configuration
 st.set_page_config(
@@ -15,7 +16,8 @@ st.markdown("""
     .main-title {
         text-align: center;
         color: #333;
-        font-size: 2.5rem;
+        font-size: 2.5rem !important;
+        width: 100%;
         font-weight: bold;
         margin-bottom: 10px;
     }
@@ -55,28 +57,34 @@ st.markdown("""
 @st.cache_resource
 def load_models():
     models = {}
+    base_path = os.path.dirname(os.path.abspath(__file__))  # Get the folder of this script
+
     try:
-        with open('simple.pkl', 'rb') as f:
+        with open(os.path.join(base_path, 'simple.pkl'), 'rb') as f:
             models['simple'] = pickle.load(f)
-    except:
+    except Exception as e:
+        st.warning(f"⚠️ Could not load simple.pkl: {e}")
         models['simple'] = None
-    
+
     try:
-        with open('polynomial_transformer.pkl', 'rb') as f:
+        with open(os.path.join(base_path, 'polynomial_transformer.pkl'), 'rb') as f:
             models['poly_transformer'] = pickle.load(f)
-        with open('linear_model.pkl', 'rb') as f:
+        with open(os.path.join(base_path, 'linear_model.pkl'), 'rb') as f:
             models['poly_lin_reg'] = pickle.load(f)
-    except:
+    except Exception as e:
+        st.warning(f"⚠️ Could not load polynomial models: {e}")
         models['poly_transformer'] = None
         models['poly_lin_reg'] = None
-    
+
     try:
-        with open('model.pkl', 'rb') as f:
+        with open(os.path.join(base_path, 'model.pkl'), 'rb') as f:
             models['multiple'] = pickle.load(f)
-    except:
+    except Exception as e:
+        st.warning(f"⚠️ Could not load model.pkl: {e}")
         models['multiple'] = None
-    
+
     return models
+
 
 # Load all models
 models = load_models()
@@ -99,7 +107,7 @@ if page == "Home":
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown("### 🟢 Simple Linear")
+        st.markdown("### 🟢 Simple")
         st.write("Study Hours → Marks")
         st.info("Predict student marks based on study hours")
     
@@ -109,7 +117,7 @@ if page == "Home":
         st.info("Predict salary based on position level")
     
     with col3:
-        st.markdown("### 🟠 Multiple Linear")
+        st.markdown("### 🟠 Multiple")
         st.write("Startup Profit")
         st.info("Predict profit from multiple factors")
     
