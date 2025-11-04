@@ -5,7 +5,7 @@ import os
 
 # Page configuration
 st.set_page_config(
-    page_title="Linear Regression Predictor",
+    page_title="Regressify Pro Dashboard",
     page_icon="📊",
     layout="centered"
 )
@@ -281,4 +281,4 @@ elif page == "Multiple Linear Regression":
                     )
 
 # Signature
-st.markdown('<p class="signature">@ ONYX PYTHON 2ND APP | 2025</p>', unsafe_allow_html=True)
+st.markdown('<p class="signature">Made with ❤️ by <b>ONYXCODE</b> using Streamlit | © 2025 Regresify Pro Dashboard</p>', unsafe_allow_html=True)
