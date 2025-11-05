@@ -13,117 +13,63 @@ st.set_page_config(
 )
 
 # ============================================
-# UNIVERSAL CSS (Works for both themes)
+# DYNAMIC CSS BASED ON THEME CHOICE
 # ============================================
-st.markdown("""
+if theme_choice == "Light":
+    text_color = "#222"
+    subtitle_color = "#555"
+    signature_color = "#444"
+elif theme_choice == "Dark":
+    text_color = "#FAFAFA"
+    subtitle_color = "#BBBBBB"
+    signature_color = "#999"
+else:
+    # Auto - use CSS media queries
+    text_color = "#FAFAFA"
+    subtitle_color = "#BBBBBB"
+    signature_color = "#999"
+
+st.markdown(f"""
     <style>
-    /* Force visibility in both themes */
-    .main-title {
+    .main-title {{
         text-align: center;
+        color: {text_color} !important;
         font-size: 2.5rem !important;
         font-weight: 700;
         margin-bottom: 10px;
-    }
-    .subtitle {
+    }}
+    .subtitle {{
         text-align: center;
+        color: {subtitle_color} !important;
         font-size: 1.1rem;
         margin-bottom: 30px;
-        opacity: 0.8;
-    }
+    }}
+    .signature {{
+        text-align: center;
+        color: {signature_color} !important;
+        font-style: italic;
+        margin-top: 50px;
+        font-size: 0.9rem;
+    }}
     
-    /* Light mode styles */
-    @media (prefers-color-scheme: light) {
-        .main-title { color: #222 !important; }
-        .subtitle { color: #555 !important; }
-        .signature { color: #444 !important; }
-        h1, h2, h3, h4, h5, h6, .stMarkdown { color: #222 !important; }
-    }
-    
-    /* Dark mode styles */
-    @media (prefers-color-scheme: dark) {
-        .main-title { color: #FAFAFA !important; }
-        .subtitle { color: #BBBBBB !important; }
-        .signature { color: #999 !important; }
-        h1, h2, h3, h4, h5, h6, .stMarkdown { color: #FAFAFA !important; }
-    }
-    
-    /* Streamlit default light theme override */
-    [data-testid="stAppViewContainer"][data-theme="light"] .main-title,
-    [data-testid="stAppViewContainer"][data-theme="light"] h1,
-    [data-testid="stAppViewContainer"][data-theme="light"] h2,
-    [data-testid="stAppViewContainer"][data-theme="light"] h3,
-    [data-testid="stAppViewContainer"][data-theme="light"] h4,
-    [data-testid="stAppViewContainer"][data-theme="light"] h5,
-    [data-testid="stAppViewContainer"][data-theme="light"] h6 {
-        color: #222 !important;
-    }
-    
-    /* Streamlit default dark theme override */
-    [data-testid="stAppViewContainer"][data-theme="dark"] .main-title,
-    [data-testid="stAppViewContainer"][data-theme="dark"] h1,
-    [data-testid="stAppViewContainer"][data-theme="dark"] h2,
-    [data-testid="stAppViewContainer"][data-theme="dark"] h3,
-    [data-testid="stAppViewContainer"][data-theme="dark"] h4,
-    [data-testid="stAppViewContainer"][data-theme="dark"] h5,
-    [data-testid="stAppViewContainer"][data-theme="dark"] h6 {
-        color: #FAFAFA !important;
-    }
-    
-    .prediction-result {
+    .prediction-result {{
         font-size: 1.5rem;
         font-weight: bold;
         text-align: center;
         padding: 20px;
         border-radius: 10px;
         margin: 20px 0;
-    }
-    .success-result {
-        background-color: #d4edda;
-        color: #155724;
-        border: 2px solid #c3e6cb;
-    }
-    .error-result {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 2px solid #f5c6cb;
-    }
-    
-    @media (prefers-color-scheme: dark) {
-        .success-result {
-            background-color: #16361f;
-            color: #90ee90;
-            border: 2px solid #2d5a3a;
-        }
-        .error-result {
-            background-color: #2e0e10;
-            color: #f28b82;
-            border: 2px solid #5a1f23;
-        }
-    }
-    
-    .signature {
-        text-align: center;
-        font-style: italic;
-        margin-top: 50px;
-        font-size: 0.9rem;
-    }
-    
-    /* Logo container for theme switching */
-    .logo-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    
-    /* Hide light logo in dark mode and vice versa */
-    @media (prefers-color-scheme: dark) {
-        .logo-light { display: none !important; }
-        .logo-dark { display: block !important; }
-    }
-    @media (prefers-color-scheme: light) {
-        .logo-light { display: block !important; }
-        .logo-dark { display: none !important; }
-    }
+    }}
+    .success-result {{
+        background-color: {'#e8f5e9' if theme_choice == 'Light' else '#16361f'};
+        color: {'#2e7d32' if theme_choice == 'Light' else '#90ee90'};
+        border: 2px solid {'#c3e6cb' if theme_choice == 'Light' else '#2d5a3a'};
+    }}
+    .error-result {{
+        background-color: {'#ffebee' if theme_choice == 'Light' else '#2e0e10'};
+        color: {'#c62828' if theme_choice == 'Light' else '#f28b82'};
+        border: 2px solid {'#f5c6cb' if theme_choice == 'Light' else '#5a1f23'};
+    }}
     </style>
 """, unsafe_allow_html=True)
 
@@ -164,25 +110,38 @@ def load_models():
 models = load_models()
 
 # ============================================
-# SIDEBAR WITH DUAL LOGO SUPPORT
+# SIDEBAR WITH LOGO AND THEME TOGGLE
 # ============================================
-# Display both logos with CSS controlling visibility
-logo_path_light = "onyxcode_black.png"
+st.sidebar.markdown("---")
+# Theme toggle
+theme_choice = st.sidebar.radio("🎨 Theme", ["Auto", "Light", "Dark"], horizontal=True)
+
+# Determine which logo to show
 logo_path_dark = "onyxcode_color.png"
+logo_path_light = "onyxcode_black.png"
 
-if os.path.exists(logo_path_light):
-    st.sidebar.markdown(f'<img src="data:image/png;base64,{{base64.b64encode(open(logo_path_light, "rb").read()).decode()}}" class="logo-light" width="200">', unsafe_allow_html=True)
-    
-if os.path.exists(logo_path_dark):
-    st.sidebar.markdown(f'<img src="data:image/png;base64,{{base64.b64encode(open(logo_path_dark, "rb").read()).decode()}}" class="logo-dark" width="200">', unsafe_allow_html=True)
-
-# Fallback: Use st.image with one logo
-if os.path.exists(logo_path_dark):
-    st.sidebar.image(logo_path_dark, width=200)
-elif os.path.exists(logo_path_light):
-    st.sidebar.image(logo_path_light, width=200)
+if theme_choice == "Light":
+    # Show black logo for light mode
+    if os.path.exists(logo_path_light):
+        st.sidebar.image(logo_path_light, width=200)
+    else:
+        st.sidebar.markdown("### 🎨 ONYXCODE")
+elif theme_choice == "Dark":
+    # Show colored logo for dark mode
+    if os.path.exists(logo_path_dark):
+        st.sidebar.image(logo_path_dark, width=200)
+    else:
+        st.sidebar.markdown("### 🎨 ONYXCODE")
 else:
-    st.sidebar.markdown("### 🎨 ONYXCODE")
+    # Auto mode - show colored logo by default
+    if os.path.exists(logo_path_dark):
+        st.sidebar.image(logo_path_dark, width=200)
+    elif os.path.exists(logo_path_light):
+        st.sidebar.image(logo_path_light, width=200)
+    else:
+        st.sidebar.markdown("### 🎨 ONYXCODE")
+
+st.sidebar.markdown("---")
 
 # ============================================
 # SIDEBAR NAVIGATION
