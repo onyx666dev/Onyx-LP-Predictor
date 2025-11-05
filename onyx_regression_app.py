@@ -113,9 +113,7 @@ models = load_models()
 # ---------------------------------------------------
 
 # ----- LOGO SELECTION BASED ON THEME ---------------
-# It's best to use a logo with transparent background,
-# or provide light/dark variants and switch them.
-# Here is a sample logic for illustration.
+
 if st.get_option("theme.base") == "light":
     st.sidebar.image("onyxcode_black.png", width=200)  # Use light-friendly logo
 else:
