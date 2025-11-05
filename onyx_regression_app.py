@@ -3,16 +3,17 @@ import pickle
 import pandas as pd
 import os
 
-# Page configuration
+# ----- PAGE CONFIGURATION -------------------------
 st.set_page_config(
     page_title="Regressify Pro Dashboard",
     page_icon="📊",
     layout="centered"
 )
 
-# Custom CSS for styling
+# ----- ADAPTIVE CUSTOM CSS -------------------------
 st.markdown("""
     <style>
+    /* Default: dark mode colors */
     .main-title {
         text-align: center;
         color: #fff;
@@ -23,7 +24,7 @@ st.markdown("""
     }
     .subtitle {
         text-align: center;
-        color: #666;
+        color: #ccc;
         font-size: 1.1rem;
         margin-bottom: 30px;
     }
@@ -50,15 +51,38 @@ st.markdown("""
         margin-top: 50px;
         font-size: 0.9rem;
     }
+
+    /* Light mode overrides using browser media query */
+    @media (prefers-color-scheme: light) {
+        .main-title {
+            color: #222 !important;
+        }
+        .subtitle {
+            color: #666 !important;
+        }
+        .prediction-result.success-result {
+            background-color: #e8f5e9 !important;
+            color: #2e7d32 !important;
+        }
+        .prediction-result.error-result {
+            background-color: #ffebee !important;
+            color: #c62828 !important;
+        }
+        .signature {
+            color: #444 !important;
+        }
+    }
     </style>
 """, unsafe_allow_html=True)
+# ---------------------------------------------------
 
-# Load models with caching
+# ----- MODEL LOADING WITH CACHING ------------------
 @st.cache_resource
 def load_models():
     models = {}
-    base_path = os.path.dirname(os.path.abspath(__file__))  # Get the folder of this script
+    base_path = os.path.dirname(os.path.abspath(__file__))  # get current folder
 
+    # Try loading each model and handle errors
     try:
         with open(os.path.join(base_path, 'simple.pkl'), 'rb') as f:
             models['simple'] = pickle.load(f)
@@ -85,56 +109,62 @@ def load_models():
 
     return models
 
-
-# Load all models
 models = load_models()
+# ---------------------------------------------------
 
-# Main title
-st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">Select a regression type to make predictions</p>', unsafe_allow_html=True)
+# ----- LOGO SELECTION BASED ON THEME ---------------
+# It's best to use a logo with transparent background,
+# or provide light/dark variants and switch them.
+# Here is a sample logic for illustration.
+if st.get_option("theme.base") == "light":
+    st.sidebar.image("onyxcode_black.png", width=200)  # Use light-friendly logo
+else:
+    st.sidebar.image("onyxcode_color.png", width=200)  # Use dark mode logo
+# ---------------------------------------------------
 
-# Sidebar with logo and navigation
-st.sidebar.image("onyxcode_color.png", width=200)  # Set width to control size
+# Sidebar with Navigation
 st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Choose a regression type:",
     ["Home", "Simple Linear Regression", "Polynomial Regression", "Multiple Linear Regression"]
 )
 
-# HOME PAGE
+# ----- TITLE & SUBTITLE ----------------------------
+st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">Select a regression type to make predictions</p>', unsafe_allow_html=True)
+
+# ----- HOME PAGE -----------------------------------
 if page == "Home":
     st.markdown("---")
-    
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         st.markdown("### 🟢 Simple")
         st.write("Study Hours → Marks")
         st.info("Predict student marks based on study hours")
-    
+
     with col2:
         st.markdown("### 🔵 Polynomial")
         st.write("Level → Salary")
         st.info("Predict salary based on position level")
-    
+
     with col3:
         st.markdown("### 🟠 Multiple")
         st.write("Startup Profit")
         st.info("Predict profit from multiple factors")
-    
+
     st.markdown("---")
     st.info("👈 Use the sidebar to select a regression type")
-    
-# SIMPLE LINEAR REGRESSION
+
+# ----- SIMPLE LINEAR REGRESSION --------------------
 elif page == "Simple Linear Regression":
     st.markdown("---")
     st.markdown("### 🟢 Predict Marks from Study Hours")
-    
+
     if models['simple'] is None:
         st.error("❌ Error: simple.pkl model file not found!")
     else:
         st.write("Enter the number of hours studied to predict exam marks.")
-        
         hours = st.number_input(
             "Study Hours (1-10):",
             min_value=1.0,
@@ -143,7 +173,7 @@ elif page == "Simple Linear Regression":
             step=0.5,
             help="Enter a value between 1 and 10"
         )
-        
+
         if st.button("🎯 Predict Marks", type="primary", use_container_width=True):
             try:
                 marks = models['simple'].predict([[hours]])
@@ -158,16 +188,15 @@ elif page == "Simple Linear Regression":
                     unsafe_allow_html=True
                 )
 
-# POLYNOMIAL REGRESSION
+# ----- POLYNOMIAL REGRESSION -----------------------
 elif page == "Polynomial Regression":
     st.markdown("---")
     st.markdown("### 🔵 Predict Salary from Level")
-    
+
     if models['poly_transformer'] is None or models['poly_lin_reg'] is None:
         st.error("❌ Error: polynomial_transformer.pkl or linear_model.pkl file not found!")
     else:
         st.write("Enter the position level to predict the salary.")
-        
         level = st.number_input(
             "Position Level:",
             min_value=1,
@@ -176,7 +205,7 @@ elif page == "Polynomial Regression":
             step=1,
             help="Enter the position level (typically 1-10)"
         )
-        
+
         if st.button("🎯 Predict Salary", type="primary", use_container_width=True):
             try:
                 level_poly = models['poly_transformer'].transform([[level]])
@@ -192,35 +221,35 @@ elif page == "Polynomial Regression":
                     unsafe_allow_html=True
                 )
 
-# MULTIPLE LINEAR REGRESSION
+# ----- MULTIPLE LINEAR REGRESSION ------------------
 elif page == "Multiple Linear Regression":
     st.markdown("---")
     st.markdown("### 🟠 Startup Profit Prediction")
-    
+
     if models['multiple'] is None:
         st.error("❌ Error: model.pkl model file not found!")
     else:
         st.write("Enter startup financial details to predict profit.")
-        
+
         st.markdown("#### Location (select one)")
         col1, col2, col3 = st.columns(3)
-        
+
         with col1:
             california = st.checkbox("California")
         with col2:
             newyork = st.checkbox("New York")
         with col3:
             florida = st.checkbox("Florida")
-        
+
         # Ensure only one location is selected
         locations_selected = sum([california, newyork, florida])
         if locations_selected > 1:
             st.warning("⚠️ Please select only ONE location")
-        
+
         st.markdown("#### Financial Data")
-        
+
         col1, col2 = st.columns(2)
-        
+
         with col1:
             rd = st.number_input(
                 "R&D Spend ($):",
@@ -229,7 +258,7 @@ elif page == "Multiple Linear Regression":
                 step=1000,
                 help="Research and Development spending"
             )
-            
+
             admin = st.number_input(
                 "Administration Spend ($):",
                 min_value=0,
@@ -237,7 +266,7 @@ elif page == "Multiple Linear Regression":
                 step=1000,
                 help="Administrative costs"
             )
-        
+
         with col2:
             marketing = st.number_input(
                 "Marketing Spend ($):",
@@ -246,9 +275,9 @@ elif page == "Multiple Linear Regression":
                 step=1000,
                 help="Marketing budget"
             )
-        
+
         st.markdown("---")
-        
+
         if st.button("🎯 Predict Profit", type="primary", use_container_width=True):
             if locations_selected != 1:
                 st.markdown(
@@ -265,10 +294,9 @@ elif page == "Multiple Linear Regression":
                         'admin': admin,
                         'marketing': marketing
                     }
-                    
                     user_data = pd.DataFrame(user_input, index=[0])
                     prediction = models['multiple'].predict(user_data)
-                    
+
                     st.markdown(
                         f'<div class="prediction-result success-result">Predicted Profit: ${int(prediction[0]):,}</div>',
                         unsafe_allow_html=True
@@ -280,5 +308,5 @@ elif page == "Multiple Linear Regression":
                         unsafe_allow_html=True
                     )
 
-# Signature
-st.markdown('<p class="signature">Made with ❤️ by <b>ONYXCODE</b> using Streamlit | © 2025 Regresify Pro Dashboard</p>', unsafe_allow_html=True)
+# ----- SIGNATURE / FOOTER --------------------------
+st.markdown('<p class="signature">Made with ❤️ by <b>ONYXCODE</b> using Streamlit | © 2025 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
