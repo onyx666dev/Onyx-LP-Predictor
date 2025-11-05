@@ -118,7 +118,7 @@ current_theme = st.get_option("theme.base")
 
 if current_theme == "light":
     # Use the logo that looks good on a light background (e.g., black/dark elements)
-    st.sidebar.image("onyxcode_black.png", width=200) 
+    st.sidebar.image("onyxcode_white.png", width=200) 
 else:
     # Use the logo that looks good on a dark background (e.g., white/light elements)
     st.sidebar.image("onyxcode_color.png", width=200)
