@@ -244,9 +244,9 @@ elif page == "Simple Linear Regression":
         st.caption("Data Source: Synthetic dataset often used for educational purposes (e.g., Simple Student Hours Data).")
         # ----------------------------
 
-        with st.success(): 
-            # Only one button call here
-            if st.button("🎯 Predict Marks", type="primary", use_container_width=True): 
+# Use st.success() for a green button background
+        with st.success():
+            if st.button("🎯 Predict Marks", type="primary", use_container_width=True):
                 try:
                     marks = models['simple'].predict([[hours]])
                     st.markdown(
