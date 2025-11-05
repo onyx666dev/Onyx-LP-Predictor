@@ -10,70 +10,116 @@ st.set_page_config(
     layout="centered"
 )
 
-# ----- ADAPTIVE CUSTOM CSS -------------------------
-st.markdown("""
-    <style>
-    /* Default: dark mode colors */
-    .main-title {
-        text-align: center;
-        color: #fff;
-        font-size: 2.5rem !important;
-        width: 100%;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    .subtitle {
-        text-align: center;
-        color: #ccc;
-        font-size: 1.1rem;
-        margin-bottom: 30px;
-    }
-    .prediction-result {
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-align: center;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 20px 0;
-    }
-    .success-result {
-        background-color: #d4edda;
-        color: #155724;
-    }
-    .error-result {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-    .signature {
-        text-align: center;
-        color: #999;
-        font-style: italic;
-        margin-top: 50px;
-        font-size: 0.9rem;
-    }
+# ----- THEME DETECTION FUNCTION -------------------
+def get_theme():
+    # Try to get the theme from the session state
+    if 'theme' in st.session_state:
+        return st.session_state.theme
+    
+    # Fallback to the config option
+    try:
+        theme = st.get_option("theme.base")
+        if theme:
+            return theme
+    except:
+        pass
+    
+    # Default to dark mode if we can't detect the theme
+    return "dark"
 
-    /* Light mode overrides using browser media query */
-    @media (prefers-color-scheme: light) {
+# Store the theme in session state
+if 'theme' not in st.session_state:
+    st.session_state.theme = get_theme()
+
+# ----- ADAPTIVE CUSTOM CSS -------------------------
+theme = st.session_state.theme
+
+if theme == "light":
+    # Light mode CSS
+    st.markdown("""
+        <style>
         .main-title {
+            text-align: center;
             color: #222 !important;
+            font-size: 2.5rem !important;
+            width: 100%;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
         .subtitle {
+            text-align: center;
             color: #666 !important;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
         }
-        .prediction-result.success-result {
+        .prediction-result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .success-result {
             background-color: #e8f5e9 !important;
             color: #2e7d32 !important;
         }
-        .prediction-result.error-result {
+        .error-result {
             background-color: #ffebee !important;
             color: #c62828 !important;
         }
         .signature {
+            text-align: center;
             color: #444 !important;
+            font-style: italic;
+            margin-top: 50px;
+            font-size: 0.9rem;
         }
-    }
-    </style>
-""", unsafe_allow_html=True)
+        </style>
+    """, unsafe_allow_html=True)
+else:
+    # Dark mode CSS (default)
+    st.markdown("""
+        <style>
+        .main-title {
+            text-align: center;
+            color: #fff;
+            font-size: 2.5rem !important;
+            width: 100%;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #ccc;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        .prediction-result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .success-result {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error-result {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .signature {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 # ---------------------------------------------------
 
 # ----- MODEL LOADING WITH CACHING ------------------
@@ -113,8 +159,7 @@ models = load_models()
 # ---------------------------------------------------
 
 # ----- LOGO SELECTION BASED ON THEME ---------------
-
-if st.get_option("theme.base") == "light":
+if theme == "light":
     st.sidebar.image("onyxcode_black.png", width=200)  # Use light-friendly logo
 else:
     st.sidebar.image("onyxcode_color.png", width=200)  # Use dark mode logo
