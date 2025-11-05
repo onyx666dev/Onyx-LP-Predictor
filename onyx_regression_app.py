@@ -276,6 +276,10 @@ elif page == "Polynomial Regression":
             help="Enter the position level (typically 1-10)"
         )
 
+        # --- ADDED DATASET SOURCE ---
+        st.caption("Data Source: Adapted from the 'Position Salaries' dataset, often used for demonstrating Polynomial Regression.")
+        # ----------------------------
+
         if st.button("🎯 Predict Salary", type="primary", use_container_width=True):
             try:
                 level_poly = models['poly_transformer'].transform([[level]])
@@ -347,6 +351,10 @@ elif page == "Multiple Linear Regression":
             )
 
         st.markdown("---")
+
+        # --- ADDED DATASET SOURCE ---
+        st.caption("Data Source: Derived from the '50 Startups' dataset, commonly used for Multiple Linear Regression examples.")
+        # ----------------------------
 
         if st.button("🎯 Predict Profit", type="primary", use_container_width=True):
             if locations_selected != 1:
