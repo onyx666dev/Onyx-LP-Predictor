@@ -13,8 +13,16 @@ st.set_page_config(
 )
 
 # ============================================
+# SIDEBAR THEME TOGGLE (MOVED TO FIX NameError)
+# ============================================
+st.sidebar.markdown("---")
+# Theme toggle - This line MUST be executed before line 23 uses theme_choice
+theme_choice = st.sidebar.radio("🎨 Theme", ["Auto", "Light", "Dark"], horizontal=True)
+
+# ============================================
 # DYNAMIC CSS BASED ON THEME CHOICE
 # ============================================
+# The NameError happened here because theme_choice was not yet defined
 if theme_choice == "Light":
     text_color = "#222"
     subtitle_color = "#555"
@@ -110,12 +118,8 @@ def load_models():
 models = load_models()
 
 # ============================================
-# SIDEBAR WITH LOGO AND THEME TOGGLE
+# SIDEBAR LOGO (THEME TOGGLE IS NOW ABOVE CSS SECTION)
 # ============================================
-st.sidebar.markdown("---")
-# Theme toggle
-theme_choice = st.sidebar.radio("🎨 Theme", ["Auto", "Light", "Dark"], horizontal=True)
-
 # Determine which logo to show
 logo_path_dark = "onyxcode_color.png"
 logo_path_light = "onyxcode_black.png"
