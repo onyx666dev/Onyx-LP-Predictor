@@ -247,7 +247,7 @@ elif page == "Simple Linear Regression":
         # --- CENTERED DATASET SOURCE (REPLACING st.caption) ---
         st.markdown(
         """
-        <div style="text-align: center; font-size: 0.85rem; color: grey;">
+        <div style="text-align: center; font-size: 0.85rem; color: grey; margin-bottom: 20px;">
             Data Source: Synthetic dataset often used for educational purposes (e.g., Simple Student Hours Data).
         </div>
         """,
