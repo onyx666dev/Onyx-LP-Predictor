@@ -113,10 +113,15 @@ models = load_models()
 # ---------------------------------------------------
 
 # ----- LOGO SELECTION BASED ON THEME ---------------
-if st.get_option("theme.base") == "light":
-    st.sidebar.image("onyxcode_black.png", width=200)  # Use light-friendly logo
+# Get the current theme setting
+current_theme = st.get_option("theme.base")
+
+if current_theme == "light":
+    # Use the logo that looks good on a light background (e.g., black/dark elements)
+    st.sidebar.image("onyxcode_black.png", width=200) 
 else:
-    st.sidebar.image("onyxcode_black.png", width=200)  # Use dark mode logo
+    # Use the logo that looks good on a dark background (e.g., white/light elements)
+    st.sidebar.image("onyxcode_color.png", width=200)
 # ---------------------------------------------------
 
 # Sidebar with Navigation
