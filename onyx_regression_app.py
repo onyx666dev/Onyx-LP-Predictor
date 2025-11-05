@@ -17,20 +17,20 @@ st.set_page_config(
 # ============================================
 def get_theme():
     """Detect Streamlit theme (light/dark)"""
-    if "theme" in st.session_state:
-        return st.session_state.theme
-    try:
-        theme = st.get_option("theme.base")
-        if theme:
-            return theme
-    except Exception:
-        pass
-    return "dark"
+    if "theme" not in st.session_state:
+        try:
+            # Try to detect from Streamlit config
+            theme = st.get_option("theme.base")
+            if theme:
+                st.session_state.theme = theme
+                return theme
+        except Exception:
+            pass
+        # Default to dark if cannot detect
+        st.session_state.theme = "dark"
+    return st.session_state.theme
 
-if "theme" not in st.session_state:
-    st.session_state.theme = get_theme()
-
-theme = st.session_state.theme
+theme = get_theme()
 is_light = theme == "light"
 
 # ============================================
@@ -74,6 +74,10 @@ if is_light:
             font-style: italic;
             margin-top: 50px;
             font-size: 0.9rem;
+        }
+        /* Fix for light mode visibility */
+        h1, h2, h3, h4, h5, h6 {
+            color: #222 !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -158,10 +162,22 @@ models = load_models()
 # ============================================
 # LOGO SELECTION BASED ON THEME
 # ============================================
+logo_path_light = "onyxcode_black.png"
+logo_path_dark = "onyxcode_color.png"
+
+# Check which logo file exists and display accordingly
 if is_light:
-    st.sidebar.image("onyxcode_black.png", width=200)
+    if os.path.exists(logo_path_light):
+        st.sidebar.image(logo_path_light, width=200)
+    else:
+        st.sidebar.markdown("### ONYXCODE")
 else:
-    st.sidebar.image("onyxcode_color.png", width=200)
+    if os.path.exists(logo_path_dark):
+        st.sidebar.image(logo_path_dark, width=200)
+    elif os.path.exists(logo_path_light):
+        st.sidebar.image(logo_path_light, width=200)
+    else:
+        st.sidebar.markdown("### ONYXCODE")
 
 # ============================================
 # SIDEBAR NAVIGATION
@@ -173,7 +189,7 @@ page = st.sidebar.radio(
 )
 
 # ============================================
-# TITLE & SUBTITLE
+# TITLE & SUBTITLE (Now properly themed)
 # ============================================
 st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Select a regression type to make predictions</p>', unsafe_allow_html=True)
