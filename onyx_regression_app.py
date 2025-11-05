@@ -244,18 +244,9 @@ elif page == "Simple Linear Regression":
         st.caption("Data Source: Synthetic dataset often used for educational purposes (e.g., Simple Student Hours Data).")
         # ----------------------------
 
-        # --- CENTERED DATASET SOURCE (REPLACING st.caption) ---
-        st.markdown(
-        """
-        <div style="text-align: center; font-size: 0.85rem; color: grey; margin-bottom: 20px;">
-            Data Source: Synthetic dataset often used for educational purposes (e.g., Simple Student Hours Data).
-        </div>
-        """,
-        unsafe_allow_html=True
-        )
-        # -----------------------------------------------------
-
-        if st.button("🎯 Predict Marks", type="primary", use_container_width=True):
+    with st.success(): 
+        # Only one button call here
+        if st.button("🎯 Predict Marks", type="primary", use_container_width=True): 
             try:
                 marks = models['simple'].predict([[hours]])
                 st.markdown(
