@@ -173,13 +173,28 @@ page = st.sidebar.radio(
     ["Home", "Simple Linear Regression", "Polynomial Regression", "Multiple Linear Regression"]
 )
 
-# --- NOTES SECTION ADDED HERE ---
+# --- NOTES SECTION ---
 st.sidebar.markdown("---") # Creates a horizontal line separator
 st.sidebar.markdown("### 💡 Notes") # A small heading for the section
 st.sidebar.info(
     "**Regressify Pro Dashboard** is a demonstration of various **Linear Regression** models (Simple, Polynomial, and Multiple) built to predict different outcomes. Use the navigation above to select a model and input the required parameters for prediction."
 )
 # --------------------------------
+
+# --- PROJECT INFO SECTION ---
+st.sidebar.markdown("---") # Separator before the Project Info
+st.sidebar.markdown("### 📚 Project Details")
+
+st.sidebar.markdown(
+    """
+    * **Project Info:** 1st App to Streamlit
+    * **Course:** AI & Machine Learning Training
+    * **Institution:** Nexpert Academy
+    """
+)
+
+st.sidebar.caption("© Nexpert Academy") # Optional: A small, low-key footer
+# ----------------------------------------
 
 # ----- TITLE & SUBTITLE ----------------------------
 st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
