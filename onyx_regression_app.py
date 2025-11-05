@@ -244,21 +244,21 @@ elif page == "Simple Linear Regression":
         st.caption("Data Source: Synthetic dataset often used for educational purposes (e.g., Simple Student Hours Data).")
         # ----------------------------
 
-    with st.success(): 
-        # Only one button call here
-        if st.button("🎯 Predict Marks", type="primary", use_container_width=True): 
-            try:
-                marks = models['simple'].predict([[hours]])
-                st.markdown(
-                    f'<div class="prediction-result success-result">Predicted Marks: {int(marks[0])}</div>',
-                    unsafe_allow_html=True
-                )
-                st.balloons()
-            except Exception as e:
-                st.markdown(
-                    f'<div class="prediction-result error-result">Error: {str(e)}</div>',
-                    unsafe_allow_html=True
-                )
+        with st.success(): 
+            # Only one button call here
+            if st.button("🎯 Predict Marks", type="primary", use_container_width=True): 
+                try:
+                    marks = models['simple'].predict([[hours]])
+                    st.markdown(
+                        f'<div class="prediction-result success-result">Predicted Marks: {int(marks[0])}</div>',
+                        unsafe_allow_html=True
+                    )
+                    st.balloons()
+                except Exception as e:
+                    st.markdown(
+                        f'<div class="prediction-result error-result">Error: {str(e)}</div>',
+                        unsafe_allow_html=True
+                    )
 
 # ----- POLYNOMIAL REGRESSION -----------------------
 elif page == "Polynomial Regression":
