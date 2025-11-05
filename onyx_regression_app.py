@@ -4,25 +4,24 @@ import pandas as pd
 import os
 
 # ============================================
-# PAGE CONFIGURATION
+# PAGE CONFIGURATION (NON-DYNAMIC PARTS ONLY)
 # ============================================
+# page_title and page_icon removed as they cannot be changed dynamically after the first run.
 st.set_page_config(
-    page_title="Regressify Pro Dashboard",
-    page_icon="📊",
     layout="centered"
 )
 
 # ============================================
-# SIDEBAR THEME TOGGLE (MOVED TO FIX NameError)
+# SIDEBAR WITH LOGO AND THEME TOGGLE (MOVED UP)
 # ============================================
 st.sidebar.markdown("---")
-# Theme toggle - This line MUST be executed before line 23 uses theme_choice
+# Theme toggle (This defines 'theme_choice' which is needed for the CSS below)
 theme_choice = st.sidebar.radio("🎨 Theme", ["Auto", "Light", "Dark"], horizontal=True)
+st.sidebar.markdown("---")
 
 # ============================================
 # DYNAMIC CSS BASED ON THEME CHOICE
 # ============================================
-# The NameError happened here because theme_choice was not yet defined
 if theme_choice == "Light":
     text_color = "#222"
     subtitle_color = "#555"
@@ -32,13 +31,19 @@ elif theme_choice == "Dark":
     subtitle_color = "#BBBBBB"
     signature_color = "#999"
 else:
-    # Auto - use CSS media queries
+    # Auto - use Dark mode colors as a fallback for the dynamic components
     text_color = "#FAFAFA"
     subtitle_color = "#BBBBBB"
     signature_color = "#999"
 
 st.markdown(f"""
     <style>
+    /* Ensure the browser tab title and favicon are set at least once for a good look */
+    /* This will not dynamically change the browser tab, but ensures the main title element is styled */
+    .st-emotion-cache-1g8w4t7 {{
+        padding-top: 1.5rem; /* Adjusts top padding for centered layout */
+    }}
+
     .main-title {{
         text-align: center;
         color: {text_color} !important;
@@ -87,8 +92,10 @@ st.markdown(f"""
 @st.cache_resource
 def load_models():
     models = {}
+    # Use relative pathing based on the script's location
     base_path = os.path.dirname(os.path.abspath(__file__))
 
+    # ... (Model loading logic remains the same)
     try:
         with open(os.path.join(base_path, 'simple.pkl'), 'rb') as f:
             models['simple'] = pickle.load(f)
@@ -118,24 +125,25 @@ def load_models():
 models = load_models()
 
 # ============================================
-# SIDEBAR LOGO (THEME TOGGLE IS NOW ABOVE CSS SECTION)
+# SIDEBAR LOGO DISPLAY (DYNAMIC)
 # ============================================
 # Determine which logo to show
 logo_path_dark = "onyxcode_color.png"
 logo_path_light = "onyxcode_black.png"
 
+# This logic ensures the logo changes with the theme
 if theme_choice == "Light":
     # Show black logo for light mode
     if os.path.exists(logo_path_light):
         st.sidebar.image(logo_path_light, width=200)
     else:
-        st.sidebar.markdown("### 🎨 ONYXCODE")
+        st.sidebar.markdown("### 🎨 ONYXCODE (Light)")
 elif theme_choice == "Dark":
     # Show colored logo for dark mode
     if os.path.exists(logo_path_dark):
         st.sidebar.image(logo_path_dark, width=200)
     else:
-        st.sidebar.markdown("### 🎨 ONYXCODE")
+        st.sidebar.markdown("### 🎨 ONYXCODE (Dark)")
 else:
     # Auto mode - show colored logo by default
     if os.path.exists(logo_path_dark):
@@ -143,7 +151,7 @@ else:
     elif os.path.exists(logo_path_light):
         st.sidebar.image(logo_path_light, width=200)
     else:
-        st.sidebar.markdown("### 🎨 ONYXCODE")
+        st.sidebar.markdown("### 🎨 ONYXCODE (Auto)")
 
 st.sidebar.markdown("---")
 
@@ -157,10 +165,18 @@ page = st.sidebar.radio(
 )
 
 # ============================================
-# TITLE & SUBTITLE
+# DYNAMIC TITLE & SUBTITLE (The fix for main content)
 # ============================================
-st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">Select a regression type to make predictions</p>', unsafe_allow_html=True)
+if page == "Home":
+    main_title_text = "📊 Regressify Pro Dashboard"
+    subtitle_text = "Select a regression type to make predictions"
+else:
+    main_title_text = f"⚙️ {page} Model"
+    subtitle_text = "Input parameters below to receive a prediction."
+    
+st.markdown(f'<p class="main-title">{main_title_text}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="subtitle">{subtitle_text}</p>', unsafe_allow_html=True)
+
 
 # ============================================
 # HOME PAGE
@@ -180,7 +196,7 @@ if page == "Home":
         st.info("Predict salary based on position level")
 
     with col3:
-        st.markdown("### 🟠 Multiple")
+        st.markdown("### 🌍 Multiple")
         st.write("Startup Profit")
         st.info("Predict profit from multiple factors")
 
@@ -247,7 +263,7 @@ elif page == "Polynomial Regression":
 # ============================================
 elif page == "Multiple Linear Regression":
     st.markdown("---")
-    st.markdown("### 🟠 Startup Profit Prediction")
+    st.markdown("### 🌍 Startup Profit Prediction")
 
     if models['multiple'] is None:
         st.error("❌ Error: model.pkl model file not found!")
