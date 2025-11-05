@@ -4,87 +4,120 @@ import pandas as pd
 import os
 
 # ============================================
-# PAGE CONFIGURATION (NON-DYNAMIC PARTS ONLY)
+# PAGE CONFIGURATION
 # ============================================
-# page_title and page_icon removed as they cannot be changed dynamically after the first run.
 st.set_page_config(
+    page_title="Regressify Pro Dashboard",
+    page_icon="📊",
     layout="centered"
 )
 
 # ============================================
-# SIDEBAR WITH LOGO AND THEME TOGGLE (MOVED UP)
+# THEME DETECTION
 # ============================================
-st.sidebar.markdown("---")
-# Theme toggle (This defines 'theme_choice' which is needed for the CSS below)
-theme_choice = st.sidebar.radio("🎨 Theme", ["Auto", "Light", "Dark"], horizontal=True)
-st.sidebar.markdown("---")
+def get_theme():
+    """Detect Streamlit theme (light/dark)"""
+    if "theme" in st.session_state:
+        return st.session_state.theme
+    try:
+        theme = st.get_option("theme.base")
+        if theme:
+            return theme
+    except Exception:
+        pass
+    return "dark"
+
+if "theme" not in st.session_state:
+    st.session_state.theme = get_theme()
+
+theme = st.session_state.theme
+is_light = theme == "light"
 
 # ============================================
-# DYNAMIC CSS BASED ON THEME CHOICE
+# DYNAMIC CUSTOM CSS
 # ============================================
-if theme_choice == "Light":
-    text_color = "#222"
-    subtitle_color = "#555"
-    signature_color = "#444"
-elif theme_choice == "Dark":
-    text_color = "#FAFAFA"
-    subtitle_color = "#BBBBBB"
-    signature_color = "#999"
+if is_light:
+    st.markdown("""
+        <style>
+        .main-title {
+            text-align: center;
+            color: #222 !important;
+            font-size: 2.5rem !important;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #555 !important;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        .prediction-result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .success-result {
+            background-color: #e8f5e9 !important;
+            color: #2e7d32 !important;
+        }
+        .error-result {
+            background-color: #ffebee !important;
+            color: #c62828 !important;
+        }
+        .signature {
+            text-align: center;
+            color: #444 !important;
+            font-style: italic;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 else:
-    # Auto - use Dark mode colors as a fallback for the dynamic components
-    text_color = "#FAFAFA"
-    subtitle_color = "#BBBBBB"
-    signature_color = "#999"
-
-st.markdown(f"""
-    <style>
-    /* Ensure the browser tab title and favicon are set at least once for a good look */
-    /* This will not dynamically change the browser tab, but ensures the main title element is styled */
-    .st-emotion-cache-1g8w4t7 {{
-        padding-top: 1.5rem; /* Adjusts top padding for centered layout */
-    }}
-
-    .main-title {{
-        text-align: center;
-        color: {text_color} !important;
-        font-size: 2.5rem !important;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }}
-    .subtitle {{
-        text-align: center;
-        color: {subtitle_color} !important;
-        font-size: 1.1rem;
-        margin-bottom: 30px;
-    }}
-    .signature {{
-        text-align: center;
-        color: {signature_color} !important;
-        font-style: italic;
-        margin-top: 50px;
-        font-size: 0.9rem;
-    }}
-    
-    .prediction-result {{
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-align: center;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 20px 0;
-    }}
-    .success-result {{
-        background-color: {'#e8f5e9' if theme_choice == 'Light' else '#16361f'};
-        color: {'#2e7d32' if theme_choice == 'Light' else '#90ee90'};
-        border: 2px solid {'#c3e6cb' if theme_choice == 'Light' else '#2d5a3a'};
-    }}
-    .error-result {{
-        background-color: {'#ffebee' if theme_choice == 'Light' else '#2e0e10'};
-        color: {'#c62828' if theme_choice == 'Light' else '#f28b82'};
-        border: 2px solid {'#f5c6cb' if theme_choice == 'Light' else '#5a1f23'};
-    }}
-    </style>
-""", unsafe_allow_html=True)
+    st.markdown("""
+        <style>
+        .main-title {
+            text-align: center;
+            color: #FAFAFA !important;
+            font-size: 2.5rem !important;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #BBBBBB !important;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        .prediction-result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .success-result {
+            background-color: #16361f !important;
+            color: #90ee90 !important;
+        }
+        .error-result {
+            background-color: #2e0e10 !important;
+            color: #f28b82 !important;
+        }
+        .signature {
+            text-align: center;
+            color: #999 !important;
+            font-style: italic;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
 # ============================================
 # MODEL LOADING (with caching)
@@ -92,10 +125,8 @@ st.markdown(f"""
 @st.cache_resource
 def load_models():
     models = {}
-    # Use relative pathing based on the script's location
     base_path = os.path.dirname(os.path.abspath(__file__))
 
-    # ... (Model loading logic remains the same)
     try:
         with open(os.path.join(base_path, 'simple.pkl'), 'rb') as f:
             models['simple'] = pickle.load(f)
@@ -125,35 +156,12 @@ def load_models():
 models = load_models()
 
 # ============================================
-# SIDEBAR LOGO DISPLAY (DYNAMIC)
+# LOGO SELECTION BASED ON THEME
 # ============================================
-# Determine which logo to show
-logo_path_dark = "onyxcode_color.png"
-logo_path_light = "onyxcode_black.png"
-
-# This logic ensures the logo changes with the theme
-if theme_choice == "Light":
-    # Show black logo for light mode
-    if os.path.exists(logo_path_light):
-        st.sidebar.image(logo_path_light, width=200)
-    else:
-        st.sidebar.markdown("### 🎨 ONYXCODE (Light)")
-elif theme_choice == "Dark":
-    # Show colored logo for dark mode
-    if os.path.exists(logo_path_dark):
-        st.sidebar.image(logo_path_dark, width=200)
-    else:
-        st.sidebar.markdown("### 🎨 ONYXCODE (Dark)")
+if is_light:
+    st.sidebar.image("onyxcode_black.png", width=200)
 else:
-    # Auto mode - show colored logo by default
-    if os.path.exists(logo_path_dark):
-        st.sidebar.image(logo_path_dark, width=200)
-    elif os.path.exists(logo_path_light):
-        st.sidebar.image(logo_path_light, width=200)
-    else:
-        st.sidebar.markdown("### 🎨 ONYXCODE (Auto)")
-
-st.sidebar.markdown("---")
+    st.sidebar.image("onyxcode_color.png", width=200)
 
 # ============================================
 # SIDEBAR NAVIGATION
@@ -165,18 +173,10 @@ page = st.sidebar.radio(
 )
 
 # ============================================
-# DYNAMIC TITLE & SUBTITLE (The fix for main content)
+# TITLE & SUBTITLE
 # ============================================
-if page == "Home":
-    main_title_text = "📊 Regressify Pro Dashboard"
-    subtitle_text = "Select a regression type to make predictions"
-else:
-    main_title_text = f"⚙️ {page} Model"
-    subtitle_text = "Input parameters below to receive a prediction."
-    
-st.markdown(f'<p class="main-title">{main_title_text}</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="subtitle">{subtitle_text}</p>', unsafe_allow_html=True)
-
+st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">Select a regression type to make predictions</p>', unsafe_allow_html=True)
 
 # ============================================
 # HOME PAGE
@@ -196,7 +196,7 @@ if page == "Home":
         st.info("Predict salary based on position level")
 
     with col3:
-        st.markdown("### 🌍 Multiple")
+        st.markdown("### 🟠 Multiple")
         st.write("Startup Profit")
         st.info("Predict profit from multiple factors")
 
@@ -263,7 +263,7 @@ elif page == "Polynomial Regression":
 # ============================================
 elif page == "Multiple Linear Regression":
     st.markdown("---")
-    st.markdown("### 🌍 Startup Profit Prediction")
+    st.markdown("### 🟠 Startup Profit Prediction")
 
     if models['multiple'] is None:
         st.error("❌ Error: model.pkl model file not found!")
