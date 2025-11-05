@@ -322,8 +322,8 @@ elif page == "Multiple Linear Regression":
 # ============================================
 st.markdown(
     '<p class="signature">Made with ❤️ by <b>ONYXCODE</b> using Streamlit | © 2025 Regressify Pro Dashboard</p>',
-    unsafe_allow_html=True
-)import streamlit as st
+    unsafe_allow_html=True)
+import streamlit as st
 import pickle
 import pandas as pd
 import os
