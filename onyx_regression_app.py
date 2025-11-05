@@ -187,13 +187,12 @@ st.sidebar.markdown("### 📚 Project Details")
 
 st.sidebar.markdown(
     """
-    * **Project Info:** 1st App to Streamlit
+    * **Info:** 1st App to Streamlit
+    * **Trainer:** Yash Sharma
     * **Course:** AI & Machine Learning Training
     * **Institution:** Nexpert Academy
     """
 )
-
-st.sidebar.caption("© Nexpert Academy") # Optional: A small, low-key footer
 # ----------------------------------------
 
 # ----- TITLE & SUBTITLE ----------------------------
