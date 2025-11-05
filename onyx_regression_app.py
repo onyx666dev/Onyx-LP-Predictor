@@ -187,13 +187,10 @@ st.sidebar.markdown("### 📚 Project Details")
 
 st.sidebar.markdown(
     """
-    <div style='font-size: 0.85rem;'> 
-        * **Project Info:** 1st App to Streamlit
-        * **Course:** AI & Machine Learning Training
-        * **Institution:** Nexpert Academy
-    </div>
-    """,
-    unsafe_allow_html=True # Must be set to True to render HTML/CSS
+    * **Project Info:** 1st App to Streamlit
+    * **Course:** AI & Machine Learning Training
+    * **Institution:** Nexpert Academy
+    """
 )
 
 st.sidebar.caption("© Nexpert Academy") # Optional: A small, low-key footer
