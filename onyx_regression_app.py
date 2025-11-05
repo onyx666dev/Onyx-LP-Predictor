@@ -166,6 +166,7 @@ st.sidebar.markdown('<div class="sidebar-logo-container"></div>', unsafe_allow_h
 # ------------------------------------------------------------
 
 # Sidebar with Navigation
+st.sidebar.markdown("---") # Creates a horizontal line separator
 st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Choose a regression type:",
