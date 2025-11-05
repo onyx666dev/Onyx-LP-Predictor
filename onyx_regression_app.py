@@ -240,6 +240,10 @@ elif page == "Simple Linear Regression":
             help="Enter a value between 1 and 10"
         )
 
+        # --- ADDED DATASET SOURCE ---
+        st.caption("Data Source: Synthetic dataset often used for educational purposes (e.g., Simple Student Hours Data).")
+        # ----------------------------
+
         if st.button("🎯 Predict Marks", type="primary", use_container_width=True):
             try:
                 marks = models['simple'].predict([[hours]])
