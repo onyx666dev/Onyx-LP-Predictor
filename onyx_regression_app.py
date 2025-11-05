@@ -177,7 +177,7 @@ page = st.sidebar.radio(
 st.sidebar.markdown("---") # Creates a horizontal line separator
 st.sidebar.markdown("### 💡 Notes") # A small heading for the section
 st.sidebar.info(
-    "**Regressify Pro Dashboard** is a demonstration of various **Linear Regression** models (Simple, Polynomial, and Multiple) built to predict different outcomes. Use the navigation above to select a model and input the required parameters for prediction."
+    "**Regressify Pro Dashboard** is a demonstration of various **Linear Regression** models (Simple, Polynomial, and Multiple) built to predict different outcomes."
 )
 # --------------------------------
 
