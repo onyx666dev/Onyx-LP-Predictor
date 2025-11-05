@@ -4,6 +4,8 @@ import pandas as pd
 import os
 import base64 # 1. New import for Base64 encoding
 
+# V2
+
 # ----- PAGE CONFIGURATION -------------------------
 st.set_page_config(
     page_title="Regressify Pro Dashboard",
@@ -169,6 +171,14 @@ page = st.sidebar.radio(
     "Choose a regression type:",
     ["Home", "Simple Linear Regression", "Polynomial Regression", "Multiple Linear Regression"]
 )
+
+# --- NOTES SECTION ADDED HERE ---
+st.sidebar.markdown("---") # Creates a horizontal line separator
+st.sidebar.markdown("### 💡 Notes") # A small heading for the section
+st.sidebar.info(
+    "**Regressify Pro Dashboard** is a demonstration of various **Linear Regression** models (Simple, Polynomial, and Multiple) built to predict different outcomes. Use the navigation above to select a model and input the required parameters for prediction."
+)
+# --------------------------------
 
 # ----- TITLE & SUBTITLE ----------------------------
 st.markdown('<p class="main-title">📊 Regressify Pro Dashboard</p>', unsafe_allow_html=True)
